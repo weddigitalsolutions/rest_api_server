@@ -2,10 +2,10 @@ const { DataTypes } = require("sequelize");
 
 const sequelize = require("../util/database");
 
-const Post = sequelize.define(
+module.exports = sequelize.define(
   "post",
   {
-    id: {
+    _id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
