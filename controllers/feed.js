@@ -4,17 +4,35 @@ const path = require("path");
 
 const Post = require("../models/post");
 
-exports.getPosts = (req, res, next) => {
+exports.getPosts = async (req, res, next) => {
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
+
+  let skip = (currentPage - 1) * perPage;
+
+  const { count, rows } = await Post.findAndCountAll({
+    offset: skip,
+    limit: perPage,
+  });
+
+  try {
+    totalItems = count;
+    res.status(200).json({ posts: rows, totalItems: count });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+
+  /*
   Post.findAll()
     .then((posts) => {
       res.status(200).json({ posts: posts });
     })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+    .
+    */
 };
 
 exports.createPost = (req, res, next) => {
