@@ -1,4 +1,6 @@
 const { validationResult } = require("express-validator");
+const fs = require("fs");
+const path = require("path");
 
 const Post = require("../models/post");
 
@@ -55,7 +57,6 @@ exports.createPost = (req, res, next) => {
 
 exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
-  console.log(postId);
   Post.findOne({
     where: {
       _id: postId,
@@ -75,4 +76,61 @@ exports.getPost = (req, res, next) => {
       }
       next(error);
     });
+};
+
+exports.updatePost = (req, res, next) => {
+  const postId = req.params.postId;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("Validation Failed, entered data is incorrect.");
+    error.statusCode = 422;
+    throw error;
+  }
+  const { title, content } = req.body;
+  let imageUrl = req.body.image;
+  if (req.file) {
+    imageUrl = req.file.path;
+  }
+  if (!imageUrl) {
+    const error = new Error("No Image provided.");
+    error.statusCode = 422;
+    throw error;
+  }
+
+  Post.findOne({
+    where: {
+      _id: postId,
+    },
+  })
+    .then((post) => {
+      console.log(post);
+      if (!post) {
+        const error = new Error("Could not find post.");
+        error.statusCode = 404;
+        throw error;
+      }
+      if (imageUrl != post.imageUrl) {
+        clearImage(post.imageUrl);
+      }
+      post.title = title;
+      post.imageUrl = imageUrl;
+      post.content = content;
+      return post.save();
+    })
+    .then((result) => {
+      res
+        .status(200)
+        .json({ message: "Post Updates Succesfully", post: result });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+};
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
 };
