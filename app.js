@@ -3,9 +3,11 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const multer = require("multer");
 
-const models = require("./models/post");
+const post = require("./models/post");
+const user = require("./models/post");
 
 const feedRoutes = require("./routes/feed");
+const authRoutes = require("./routes/auth");
 //const sequelize = require("./util/database");
 
 const app = express();
@@ -49,13 +51,15 @@ app.use((req, res, next) => {
 });
 
 app.use("/feed", feedRoutes);
+app.use("/auth", authRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);
 
   const status = error.statusCode;
   const message = error.message;
-  res.status(status).json({ message: message });
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
 });
 
 app.listen(8080);

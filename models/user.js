@@ -3,29 +3,29 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../util/database");
 
 module.exports = sequelize.define(
-  "post",
+  "user",
   {
     _id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.STRING(50),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    imageUrl: {
+    name: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    creator: {
-      type: DataTypes.STRING(50),
+    email: {
+      type: DataTypes.STRING(100),
       allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING(10),
+      default: "I am new!",
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -35,9 +35,17 @@ module.exports = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    postId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
+      references: {
+        model: "post",
+        key: "_id",
+      },
+    },
   },
   {
-    tableName: "post",
+    tableName: "user",
     timestamps: true,
   }
 );
