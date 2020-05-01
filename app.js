@@ -3,12 +3,14 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const multer = require("multer");
 
-const post = require("./models/post");
-const user = require("./models/post");
+// Used to sync db
+//const post = require("./models/post");
+//const user = require("./models/post");
+//const sequelize = require("./util/database");
+//const { DataTypes } = require("sequelize");
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
-//const sequelize = require("./util/database");
 
 const app = express();
 
@@ -55,7 +57,6 @@ app.use("/auth", authRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);
-
   const status = error.statusCode;
   const message = error.message;
   const data = error.data;
@@ -64,11 +65,13 @@ app.use((error, req, res, next) => {
 
 app.listen(8080);
 /*
+// Used to sync db
+post.hasOne(user, { foreignKey: "userId", type: DataTypes.UUID });
+user.belongsTo(post);
 sequelize
   .sync({ force: true })
   .then((result) => {
     console.log(result);
-    
   })
   .catch((error) => console.log(error));
   */

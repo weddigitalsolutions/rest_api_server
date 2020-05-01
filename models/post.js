@@ -9,7 +9,6 @@ module.exports = sequelize.define(
       type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
     },
     title: {
       type: DataTypes.STRING(50),
@@ -34,6 +33,18 @@ module.exports = sequelize.define(
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
+      references: {
+        model: "post",
+        key: "_id",
+      },
+    },
+    postId: {
+      type: DataTypes.INTEGER(11),
+      allowNull: true,
     },
   },
   {

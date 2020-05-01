@@ -6,26 +6,22 @@ module.exports = sequelize.define(
   "user",
   {
     _id: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.CHAR(36),
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
     password: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING(60),
       allowNull: false,
     },
     status: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(20),
       default: "I am new!",
+      allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -34,14 +30,6 @@ module.exports = sequelize.define(
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-    },
-    postId: {
-      type: DataTypes.INTEGER(11),
-      allowNull: true,
-      references: {
-        model: "post",
-        key: "_id",
-      },
     },
   },
   {
