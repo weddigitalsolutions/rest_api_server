@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 
-const User = require("../models/user");
+const { User } = require("../util/database");
 
 exports.signUp = (req, res, next) => {
   const errors = validationResult(req);
@@ -21,7 +21,6 @@ exports.signUp = (req, res, next) => {
     .hash(password, 10)
     .then((hashedPwd) => {
       User.create({
-        _id: uuidv4(),
         email: email,
         name: name,
         password: hashedPwd,

@@ -3,6 +3,7 @@ const { body } = require("express-validator");
 
 const User = require("../models/user");
 const authController = require("../controllers/auth");
+const db = require("../util/database");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.put(
       .isEmail()
       .withMessage("Please enter a valid email.")
       .custom((value, { req }) => {
-        return User.findOne({
+        return db.User.findOne({
           where: {
             email: value,
           },

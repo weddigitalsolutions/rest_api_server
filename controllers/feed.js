@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const fs = require("fs");
 const path = require("path");
 
-const Post = require("../models/post");
+const { Post } = require("../util/database");
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
@@ -25,14 +25,6 @@ exports.getPosts = async (req, res, next) => {
     }
     next(error);
   }
-
-  /*
-  Post.findAll()
-    .then((posts) => {
-      res.status(200).json({ posts: posts });
-    })
-    .
-    */
 };
 
 exports.createPost = (req, res, next) => {

@@ -4,10 +4,11 @@ const path = require("path");
 const multer = require("multer");
 
 // Used to sync db
-//const post = require("./models/post");
-//const user = require("./models/post");
-//const sequelize = require("./util/database");
-//const { DataTypes } = require("sequelize");
+const { Post, User } = require("./util/database");
+// const User = require("./models/user");
+const { db } = require("./util/database");
+const { DataTypes } = require("sequelize");
+//require("./models");
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
@@ -63,13 +64,20 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-app.listen(8080);
-/*
+//app.listen(8080);
+
 // Used to sync db
-post.hasOne(user, { foreignKey: "userId", type: DataTypes.UUID });
-user.belongsTo(post);
+db.sequelize
+  .sync()
+  .then((result) => {
+    console.log(result);
+    app.listen(8080);
+  })
+  .catch((error) => console.log(error));
+
+/*
 sequelize
-  .sync({ force: true })
+  .sync()
   .then((result) => {
     console.log(result);
   })

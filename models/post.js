@@ -1,54 +1,39 @@
-const { DataTypes } = require("sequelize");
-
-const sequelize = require("../util/database");
-
-module.exports = sequelize.define(
-  "post",
-  {
-    _id: {
-      type: DataTypes.INTEGER(11),
-      allowNull: false,
-      primaryKey: true,
-    },
-    title: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    imageUrl: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    creator: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    userId: {
-      type: DataTypes.INTEGER(11),
-      allowNull: true,
-      references: {
-        model: "post",
-        key: "_id",
+module.exports = (sequelize, types) => {
+  const Post = sequelize.define(
+    "Post",
+    {
+      _id: {
+        type: types.UUID,
+        defaultValue: types.UUIDV4,
+        allowNull: false,
+        primaryKey: true,
+      },
+      title: {
+        type: types.STRING(50),
+        allowNull: false,
+      },
+      content: {
+        type: types.TEXT,
+        allowNull: false,
+      },
+      imageUrl: {
+        type: types.STRING(100),
+        allowNull: false,
+      },
+      /* creator: {
+        type: types.STRING(50),
+        allowNull: false,
+      }, */
+      updatedAt: {
+        type: types.DATE,
+        allowNull: false,
       },
     },
-    postId: {
-      type: DataTypes.INTEGER(11),
-      allowNull: true,
-    },
-  },
-  {
-    tableName: "post",
-    timestamps: true,
-  }
-);
+    {
+      tableName: "post",
+      timestamps: true,
+    }
+  );
+
+  return Post;
+};
