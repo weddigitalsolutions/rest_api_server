@@ -20,10 +20,6 @@ module.exports = (sequelize, types) => {
         type: types.STRING(100),
         allowNull: false,
       },
-      /* creator: {
-        type: types.STRING(50),
-        allowNull: false,
-      }, */
       updatedAt: {
         type: types.DATE,
         allowNull: false,

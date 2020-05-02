@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const fs = require("fs");
 const path = require("path");
 
-const { Post } = require("../util/database");
+const { Post, User } = require("../util/database");
 
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
@@ -14,6 +14,12 @@ exports.getPosts = async (req, res, next) => {
   const { count, rows } = await Post.findAndCountAll({
     offset: skip,
     limit: perPage,
+    include: [
+      {
+        model: User,
+        as: "creator",
+      },
+    ],
   });
 
   try {
@@ -43,19 +49,46 @@ exports.createPost = (req, res, next) => {
   }
   const imageUrl = req.file.path;
   const { title, content } = req.body;
+  let creator;
 
   const post = {
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: "Wilsinho",
+    UserId: req.userId,
+    creatorId: req.userId,
   };
   Post.create(post)
     .then((result) => {
-      res.status(201).json({
-        message: "Post created successfully",
-        post: result,
+      Post.findOne({
+        include: [
+          {
+            model: User,
+            as: "creator",
+            where: {
+              _id: result.creatorId,
+            },
+          },
+        ],
+      }).then((resultado) => {
+        res.status(201).json({
+          message: "Post created successfully",
+          post: resultado,
+        });
       });
+      /*
+      result.getUser().then((user) => {
+        console.log(user);
+        res.status(201).json({
+          message: "Post created successfully",
+          post: post,
+          creator: {
+            _id: user._id,
+            name: user.name,
+          },
+        });
+      });
+      */
     })
     .catch((error) => {
       if (!error.statusCode) {
@@ -68,6 +101,12 @@ exports.createPost = (req, res, next) => {
 exports.getPost = (req, res, next) => {
   const postId = req.params.postId;
   Post.findOne({
+    include: [
+      {
+        model: User,
+        as: "creator",
+      },
+    ],
     where: {
       _id: postId,
     },
@@ -128,9 +167,21 @@ exports.updatePost = (req, res, next) => {
       return post.save();
     })
     .then((result) => {
-      res
-        .status(200)
-        .json({ message: "Post Updates Succesfully", post: result });
+      Post.findOne({
+        include: [
+          {
+            model: User,
+            as: "creator",
+          },
+        ],
+        where: {
+          _id: result._id,
+        },
+      }).then((postUser) => {
+        res
+          .status(200)
+          .json({ message: "Post Updates Succesfully", post: postUser });
+      });
     })
     .catch((error) => {
       if (!error.statusCode) {

@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
 const User = UserModel(sequelize, Sequelize);
 const Post = PostModel(sequelize, Sequelize);
 
-Post.belongsTo(User);
+Post.belongsTo(User, { as: "creator" });
 User.hasMany(Post);
 
 db = {
